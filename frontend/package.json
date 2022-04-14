@@ -6,14 +6,14 @@
   "scripts": {
     "start": "run-script-os",
     "start:linux:darwin": "concurrently \"node ./node_modules/.bin/http-server -a localhost -p 8081\"  \"sleep 1 && open http://localhost:8081\"",
-    "start:win32": "node node_modules/live-server/live-server --port=8081 --entry-file=index.html"
+    "start:win32": "node node_modules/live-server/live-server --port=8081"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "concurrently": "^7.0.0",
-    "http-server": "^14.1.0",
-    "live-server": "^1.1.0"
+    "concurrently": "^5.2.0",
+    "http-server": "^0.11.1",
+    "live-server": "^1.2.1"
   },
   "devDependencies": {
     "run-script-os": "^1.1.6"

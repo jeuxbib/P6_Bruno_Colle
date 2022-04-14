@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-
-/**Deux utilisateur avec le même email bloqué */
 const uniqueValidator = require('mongoose-unique-validator');
 
 const userSchema = mongoose.Schema({
