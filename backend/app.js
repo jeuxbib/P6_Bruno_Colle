@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 
 // Connexion a la database de mongoose
-mongoose.connect('mongodb+srv://bruno.colleS@cluster0.mibyv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://Christophe:christophe@cluster0.mibyv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))

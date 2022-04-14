@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// importation du package qui permet de verifier que l'adresse mail de l'utilisateur est unique
+// importation du package qui permet de verifier que l'adresse mail de l'utilisateur est unqiue
 const uniqueValidator = require('mongoose-unique-validator');
 
 
