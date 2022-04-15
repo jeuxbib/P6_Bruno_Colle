@@ -27,7 +27,7 @@ app.use(helmet({
     }
 ));
 
-mongoose.connect(`mongodb+srv://${ID}:${PASSWORD}${CLUSTER}.mongodb.net/${BDD_NAME}?retryWrites=true&w=majority`,
+mongoose.connect(`mongodb+srv://Jeuxbib:Jeuxbib2709@cluster0.nn7u8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
     { useNewUrlParser: true,
         useUnifiedTopology: true })
     .then(() => console.log('Connexion à MongoDB réussie !'))
