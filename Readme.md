@@ -1,18 +1,19 @@
-#p6_piquante
+## Installation ##
 
-npm install depuis le dossier backend
-Pour le lancer avec nodemon: npm start
+1. Télécharger le repo GIT 
 
-npm install depuis le dossier frontend
-Pour le lancer : npm start
+2. Ouvrir un terminal sur le "frontend" et faire un "npm install"
 
-.env dans le dossier backend
+3. Ouvrir un terminal sur le "backend" et faire un "npm install"
 
-DB_KEY=''
-TOKEN=''
+4. Executer un "npm start" sur le terminal "backend" puis "frontend"
 
-Pour creer un compte le mot de passe doit contenir :
--Entre 8 et 35 caractères 
--Une majuscule, une minuscule
--Un chiffre
--Un caractère special
+## Utilisation du site ##
+
+1. Crée un nouvel utilisateur 
+
+2. Clickez sur "Add Sauce"
+
+3. Renseignez les champs et ajoutez une photo
+
+4. Consultez les differentes sauces sur la page principale
