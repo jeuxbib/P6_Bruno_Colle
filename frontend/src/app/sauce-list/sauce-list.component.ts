@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SaucesService } from '../services/sauces.service';
-import { Subscription } from 'rxjs';
+import { catchError, Observable, of, tap } from 'rxjs';
 import { Sauce } from '../models/Sauce.model';
 import { Router } from '@angular/router';
 
@@ -11,26 +11,25 @@ import { Router } from '@angular/router';
 })
 export class SauceListComponent implements OnInit {
 
-  sauceSub: Subscription;
-  sauces: Sauce[];
-  loading: boolean;
-  errorMsg: string;
+  sauces$!: Observable<Sauce[]>;
+  loading!: boolean;
+  errorMsg!: string;
 
   constructor(private sauce: SaucesService,
               private router: Router) { }
 
   ngOnInit() {
     this.loading = true;
-    this.sauceSub = this.sauce.sauces$.subscribe(
-      (sauces) => {
-        this.sauces = sauces;
+    this.sauces$ = this.sauce.sauces$.pipe(
+      tap(() => {
         this.loading = false;
-        this.errorMsg = null;
-      },
-      (error) => {
+        this.errorMsg = '';
+      }),
+      catchError(error => {
         this.errorMsg = JSON.stringify(error);
         this.loading = false;
-      }
+        return of([]);
+      })
     );
     this.sauce.getSauces();
   }
