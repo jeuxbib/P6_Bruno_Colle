@@ -1,23 +1,12 @@
-# HOT TAKES #
+# OpenClassrooms P6 - Frontend SoPekocko "Piquante"
 
-## Installation ##
+Voici le frontend de l'application "Piquante" fourni par OpenClassrooms pour le projet 6 de la [formation de développeur web](https://openclassrooms.com/fr/paths/185-developpeur-web)  
 
-Here are the dependancies you need to install:
-- NodeJS 12.14 or 14.0.
-- Angular CLI 7.0.2.
-- node-sass : make sure to use the corresponding version to NodeJS. For Noe 14.0 for instance, you need node-sass in version 4.14+.
+J'ai rencontré quelques souci de compatibilités de version lorsque j'ai téléchargé la [version originale du frontend](https://github.com/OpenClassrooms-Student-Center/dwj-projet6) fournée par OpenClassrooms.  
 
-On Windows, these installations require to use PowerShell in administrator mode.
+- J'ai donc dû mettre à jour certains modules.
+- J'ai aussi très légèrement modifié les routes en rajoutant { withCredentials: true } ce qui permet d'envoyer les cookies au backend :
 
-Then, clone this repo, `run npm install`, and `run npm install --save-dev run-script-os`.
+![screenshot des modifications](https://github.com/RomainSire/OC-P6-SoPekocko-frontend/blob/master/screenshot.png "screenshot des modifications")
 
-
-## Usage ##
-
-Run `npm start`. This should both run the local server and launch your browser.
-
-If your browser fails to launch, or shows a 404 error, navigate your browser to http://localhost:8080.
-
-The app should reload automatically when you make a change to a file.
-
-Use `Ctrl+C` in the terminal to stop the local server.
+> **Consulter le [repository du backend](https://github.com/RomainSire/OC-P6-SoPekocko) ou tout est mieux expliqué**

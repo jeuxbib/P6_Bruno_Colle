@@ -1,42 +1,51 @@
 const express = require('express');
-const helmet = require("helmet");
-const cors = require("cors");
-const app = express();
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
-const dotenv = require('dotenv');
-dotenv.config();
+const fs = require('fs');
+const morgan = require('morgan');
+const helmet = require('helmet');
+require('dotenv').config();
+const session = require('express-session');
 
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 
-const ID = process.env.DB_USER;
-const PASSWORD = process.env.DB_PASSWORD;
-const BDD_NAME = process.env.DB_NAME;
-const CLUSTER = process.env.DB_CLUSTER;
+// Connexion à la base de données
+mongoose.connect(process.env.MONGODB_PATH,
+  { useNewUrlParser: true,
+    useUnifiedTopology: true })
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-var corsOptions = {
-    origin: "http://127.0.0.1:8081"
-};
+// Lancement de Express
+const app = express();
 
-app.use(cors(corsOptions));
-app.use(helmet({
-    contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false,
-    }
-));
-
-mongoose.connect(`mongodb+srv://Jeuxbib:Jeuxbib2709@cluster0.nn7u8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
-    { useNewUrlParser: true,
-        useUnifiedTopology: true })
-    .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch(() => console.log('Connexion à MongoDB échouée !'));
-
+/**
+ * MIDDLEWARES
+ */
+// Configuration cors
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', process.env.AUTHORIZED_ORIGIN);
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
+// Parse le body des requetes en json
 app.use(bodyParser.json());
+// Log toutes les requêtes passées au serveur (sécurité)
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+app.use(morgan('combined', { stream: accessLogStream }));
+// Sécurise les headers
+app.use(helmet());
+// Utilisation de la session pour stocker de manière persistante le JWT coté front
+app.use(session({ secret: process.env.COOKIE_KEY, cookie: { maxAge: 900000 }})) // cookie stocké pendant 15 min
 
+/**
+ * ROUTES
+ */
 app.use('/images', express.static(path.join(__dirname, 'images')));
-
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
 
