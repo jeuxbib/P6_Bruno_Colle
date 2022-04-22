@@ -1,11 +1,15 @@
 const express = require('express');
 const helmet = require("helmet");
 const app = express();
+const morgan = require('morgan');
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
 const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
+app.listen(3000, () => {
+  console.debug('App listening on :3000');
+});
 
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');

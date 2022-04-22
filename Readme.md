@@ -29,7 +29,7 @@ Développement Backend en Javascript
 
 ## Pour tester l'application
 
-1. Cloner le [repo git](https://github.com/jeuxbib/P6_Bruno_Colle.git),
+1. Cloner le [repo git] (https://github.com/jeuxbib/P6_Bruno_Colle.git),
 
 2. lancer le frontend :  
     - Dans un terminal, accéder au dossier du frontend
