@@ -15,11 +15,11 @@ dotenv.config();
   .then(()  => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-  mongoose.connect(`mongodb+srv://jeuxbib:jeuxbib@bibcluster.sv8fd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
-  { useNewUrlParser: true,
-    useUnifiedTopology: true })
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
+  //mongoose.connect(`mongodb+srv://jeuxbib:jeuxbib@bibcluster.sv8fd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
+  //{ useNewUrlParser: true,
+   // useUnifiedTopology: true })
+  //.then(() => console.log('Connexion à MongoDB réussie !'))
+  //.catch(() => console.log('Connexion à MongoDB échouée !'));
 
 const app = express();
 
