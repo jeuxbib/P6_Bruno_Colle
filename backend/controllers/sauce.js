@@ -1,6 +1,7 @@
 const Sauce = require('../models/sauce');
 const fs    = require('fs');
-//const sauce = require('../models/sauce');
+
+
 const { request } = require('http');
 
 exports.createSauce = (req, res, next) => {

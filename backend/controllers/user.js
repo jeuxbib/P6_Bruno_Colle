@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');//jsonwebtoken ce package permet de créer des token et de les verifier
 const User = require('../models/Users');
+const dotenv       = require("dotenv");
+dotenv.config();
 
 
 
