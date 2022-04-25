@@ -1,7 +1,13 @@
 //importer express
+// pour créer des applis web avec Node :
 const express     = require('express');
+// pour faciliter les inéractions avec la bdd mongoDB:
 const mongoose    = require('mongoose');
 const path        = require('path');
+// old replaceWith:
+const sanitize = require("express-mongo-sanitize");
+// pour sécuriser les en-tête http de l'application express:
+const helmet = require("helmet");
 const sauceRoutes = require('./routes/sauce');
 const userRoutes  = require ('./routes/user');
 const dotenv       = require("dotenv");
@@ -17,24 +23,38 @@ dotenv.config();
 
   //mongoose.connect(`mongodb+srv://jeuxbib:jeuxbib@bibcluster.sv8fd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
   //{ useNewUrlParser: true,
-   // useUnifiedTopology: true })
+   //useUnifiedTopology: true })
   //.then(() => console.log('Connexion à MongoDB réussie !'))
   //.catch(() => console.log('Connexion à MongoDB échouée !'));
 
 const app = express();
 
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');//le "*" veut dire : accéder à notre API depuis n'importe quelle origine (pour tout le monde)
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    next();//ne pas oublier d'appeler next pour pouvoir passer l'execution au middleware d'apres
+  res.setHeader("Access-Control-Allow-Origin", "*"); // "*" permet d'accéder a l'API depuis n'importe quelle origine
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
+  ); // autorisation d'utiliser certains headers sur l'objet requête
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  ); // permet d'envoyer des requêtes avec ces méthodes
+  next(); // passe l'exécution au middleware suivant
 });
 
 
-app.use(express.json());//transforme le corps de la requete en objet javascript utilisable
-app.use('/images', express.static(path.join(__dirname, 'images')));
-app.use('/api/sauces', sauceRoutes);
-app.use('/api/auth', userRoutes);
+app.use(express.json());
 
-//la on exporte cette const pour qu'on puisse y accèder depuis nos autres fichier
+// je protège l'appli de certaines vulnerabilités en protégeant les en-têtes
+
+app.use(helmet());
+
+
+// je nettoie les données user pour éviter des injections dans la BDD
+app.use(sanitize());
+
+// je configure les routes d'API
+app.use("/images", express.static(path.join(__dirname, "images")));
+app.use("/api/auth", userRoutes);
+app.use("/api/sauces", sauceRoutes);
 module.exports = app;
