@@ -1,11 +1,11 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');//jsonwebtoken ce package permet de créer des token et de les verifier
 const User = require('../models/Users');
-const dotenv = require("dotenv");
+const dotenv       = require("dotenv");
 dotenv.config();
 
 
-//signup
+
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)//hash = la fonction pour "hashé" un mot de passe pour le crypter
         .then(hash => {
@@ -19,37 +19,29 @@ exports.signup = (req, res, next) => {
         })
         .catch(error => res.status(500).json({ error }));
 };
-//login
-exports.login = (req, res, next) => {
-    // on vérifie si l'email utilisateur existe dans la BDD
-    User.findOne({ email: req.body.email })
-      .then((user) => {
-        console.log("user", user);
-        if (!user) {
-          // s'il n'existe pas
-          return res.status(401).json({ error: "Erreur ! Utilisateur non trouvé !" });
-        }
-        bcrypt
-          // on compare les entrées et les données
-          .compare(req.body.password, user.password)
-          .then((valid) => {
-            console.log("validation", valid);
-            if (!valid) {
-              // si c'est différent
-              return res.status(401).json({ error: "Mot de passe incorrect !" });
+
+exports.login  = (req, res, next) => {
+    User.findOne({ email: req.body.email })//méthode findOne pour trouver un seul utilisateur de la base de donnée
+        .then(user => {
+            if (!user) {
+                return res.status(401).json({ error: 'Utilisateur non trouvé !' });
             }
-            res.status(200).json({
-              // si c'est bon, on envoie l'objet suivant
-              userId: user._id,
-              token: jwt.sign(
-                //contient les données qu'on veut encoder dans ce token
-                { userId: user._id },
-                "RANDOM_TOKEN_SECRET", // avec une clé secrète
-                { expiresIn: "24h" } // qui est valide 24h
-              ),
-            });
-          })
-          .catch((error) => res.status(500).json({ error }));
-      })
-      .catch((error) => res.status(500).json({ error }));
-  };
+            bcrypt.compare(req.body.password, user.password)
+                .then(valid => {
+                    if (!valid) {
+                        return res.status(401).json({ error: 'Mot de passe incorrect !'});
+                    }
+                    const newToken = jsonwebtoken.sign(
+                        { userId: user._id },
+                        process.env.TOKEN_KEY,
+                        { expiresIn: '24h' }
+                    );
+                    req.session.token = newToken; // envoi du token en session = création du cookie
+                    res.status(200).json({
+                        userId: user._id,
+                        token: newToken  // le front attend aussi un token en json, donc obligé de laisser ça
+                    })
+                })
+        })
+        .catch(error => res.status(500).json({ error }));
+};

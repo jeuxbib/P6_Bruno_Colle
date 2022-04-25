@@ -1,17 +1,15 @@
 //importer express
-// pour créer des applis web avec Node :
-const express     = require('express');
-// pour faciliter les inéractions avec la bdd mongoDB:
-const mongoose    = require('mongoose');
-const path        = require('path');
-// old replaceWith:
-const sanitize = require("express-mongo-sanitize");
-// pour sécuriser les en-tête http de l'application express:
-const helmet = require("helmet");
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const path = require('path');
+const fs = require('fs');
+const helmet = require('helmet');
+require('dotenv').config();
+
+
 const sauceRoutes = require('./routes/sauce');
-const userRoutes  = require ('./routes/user');
-const dotenv       = require("dotenv");
-dotenv.config();
+const userRoutes = require('./routes/user');
 
 
   //connexion mongoDB avec mongoose via dotenv pour plus de sécurité
@@ -23,38 +21,39 @@ dotenv.config();
 
   //mongoose.connect(`mongodb+srv://jeuxbib:jeuxbib@bibcluster.sv8fd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
   //{ useNewUrlParser: true,
-   //useUnifiedTopology: true })
+   // useUnifiedTopology: true })
   //.then(() => console.log('Connexion à MongoDB réussie !'))
   //.catch(() => console.log('Connexion à MongoDB échouée !'));
 
+// Lancement de Express
 const app = express();
 
+//MIDDLEWARES
+
+// Configuration cors
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*"); // "*" permet d'accéder a l'API depuis n'importe quelle origine
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-  ); // autorisation d'utiliser certains headers sur l'objet requête
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  ); // permet d'envoyer des requêtes avec ces méthodes
-  next(); // passe l'exécution au middleware suivant
+   res.setHeader('Access-Control-Allow-Origin', process.env.AUTHORIZED_ORIGIN);
+   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+   res.setHeader('Access-Control-Allow-Credentials', true);
+   next();
 });
-
-
-app.use(express.json());
-
-// je protège l'appli de certaines vulnerabilités en protégeant les en-têtes
-
+// Parse le body des requetes en json
+app.use(bodyParser.json());
+// Log toutes les requêtes passées au serveur (sécurité)
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+app.use(morgan('combined', { stream: accessLogStream }));
+// Sécurise les headers
 app.use(helmet());
+// Utilisation de la session pour stocker de manière persistante le JWT coté front
+app.use(session({ secret: process.env.COOKIE_KEY, cookie: { maxAge: 900000 }})) // cookie stocké pendant 15 min
+
+/**
+* ROUTES
+*/
+app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/api/sauces', sauceRoutes);
+app.use('/api/auth', userRoutes);
 
 
-// je nettoie les données user pour éviter des injections dans la BDD
-app.use(sanitize());
-
-// je configure les routes d'API
-app.use("/images", express.static(path.join(__dirname, "images")));
-app.use("/api/auth", userRoutes);
-app.use("/api/sauces", sauceRoutes);
 module.exports = app;
