@@ -1,59 +1,51 @@
-//importer express
 const express = require('express');
+const dotenv = require('dotenv').config()
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const path = require('path');
-const fs = require('fs');
-const helmet = require('helmet');
-require('dotenv').config();
-
-
-const sauceRoutes = require('./routes/sauce');
+const path = require('path') //pour la gestion des fichiers envoyé par l'utilisateur
 const userRoutes = require('./routes/user');
+const saucesRoutes = require('./routes/sauce');
+const helmet = require('helmet');//protège les vulnérabilité d'en tête HTPP
+const mongoSanitize = require('express-mongo-sanitize'); //prévenir les injections
 
+//connexion à la bdd
+mongoose.connect('mongodb+srv://' + process.env.DB_LOGIN + ':' + process.env.DB_PASS + '@cluster0.76ulj.mongodb.net/' + process.env.DB_NAME + '?retryWrites=true&w=majority',
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(() => console.log('Connexion à MongoDB réussie !'))
+    .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-  //connexion mongoDB avec mongoose via dotenv pour plus de sécurité
-  mongoose.connect(process.env.DB_CONNECTION,
-  { useNewUrlParser: true,
-    useUnifiedTopology: true })
-  .then(()  => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
-
-  //mongoose.connect(`mongodb+srv://jeuxbib:jeuxbib@bibcluster.sv8fd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
-  //{ useNewUrlParser: true,
-   // useUnifiedTopology: true })
-  //.then(() => console.log('Connexion à MongoDB réussie !'))
-  //.catch(() => console.log('Connexion à MongoDB échouée !'));
-
-// Lancement de Express
 const app = express();
 
-//MIDDLEWARES
-
-// Configuration cors
-app.use((req, res, next) => {
-   res.setHeader('Access-Control-Allow-Origin', process.env.AUTHORIZED_ORIGIN);
-   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-   res.setHeader('Access-Control-Allow-Credentials', true);
-   next();
-});
-// Parse le body des requetes en json
-app.use(bodyParser.json());
-// Log toutes les requêtes passées au serveur (sécurité)
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
-app.use(morgan('combined', { stream: accessLogStream }));
-// Sécurise les headers
 app.use(helmet());
-// Utilisation de la session pour stocker de manière persistante le JWT coté front
-app.use(session({ secret: process.env.COOKIE_KEY, cookie: { maxAge: 900000 }})) // cookie stocké pendant 15 min
+app.use(mongoSanitize({
+    replaceWith: '_'
+}))
 
-/**
-* ROUTES
-*/
+// gérer les erreurs CROS, ajout de middleware qui s'appliquera à toute les routes
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*'); //accéder à notre api depuis n'importe quelle origine '*'
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'); // ajout des headers mentionnés aux requetes envoyées vers notre api'
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS'); // envoyer les requêtes avec les méthodes get post ...
+    next();
+});
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }))
+
+//affiche les images sans le path
 app.use('/images', express.static(path.join(__dirname, 'images')));
-app.use('/api/sauces', sauceRoutes);
+
+
+app.use('/api/sauces', saucesRoutes)
 app.use('/api/auth', userRoutes);
 
-
 module.exports = app;
+
+
+
+//motDePassPourLeP6 => userRead
+//mdpPourLeP6 => simon 
+

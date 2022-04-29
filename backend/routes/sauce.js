@@ -1,17 +1,22 @@
 const express = require('express');
 const router = express.Router();
+const stuffCtrl = require('../controllers/sauce');
 
-const sauceCtrl = require('../controllers/sauce');
-const auth = require('../middlewares/auth');
-const multer = require('../middlewares/multer-config');
-const validate = require('../middlewares/validate-inputs');
+const auth = require('../middleware/auth');
 
-router.get('/', auth, sauceCtrl.getAllSauce);
-router.get('/:id', auth, validate.id, sauceCtrl.getOneSauce);
-router.post('/', auth, multer, validate.sauce, sauceCtrl.createSauce);
-router.put('/:id', auth, multer, validate.id, validate.sauce, sauceCtrl.modifySauce);
-router.delete('/:id', auth, validate.id, sauceCtrl.deleteSauce);
-router.post('/:id/like', auth, validate.id, validate.like, sauceCtrl.likeSauce);
+const multer = require('../middleware/multer-config'); //accepte les fichiers entrants
+
+//post une sauce
+router.post('/', auth, multer, stuffCtrl.createSauce)
+//modifier une sauce
+router.put('/:id', auth, multer, stuffCtrl.modifySauce);
+//supprimer la route
+router.delete('/:id', auth, stuffCtrl.deleteSauce);
+//route pour un sauce en fonction d'orderId
+router.get('/:id', auth, stuffCtrl.getOneSauce)
+// route pour toutes les sauces
+router.get('/', auth, stuffCtrl.getAllSauce);
+//gesstion des likes
+router.post('/:id/like', auth, stuffCtrl.likeSauce);
 
 module.exports = router;
-
