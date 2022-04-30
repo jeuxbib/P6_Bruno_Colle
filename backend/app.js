@@ -15,10 +15,9 @@ mongoose.connect(`mongodb+srv://jeuxbib:jeuxbib@bibcluster.sv8fd.mongodb.net/myF
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-const path = require('path');
 
 const authRoutes = require('./routes/auth');
-const saucesRoutes = require('./routes/sauces');
+//const saucesRoutes = require('./routes/sauces');
 const Sauce = require('./models/sauce')
 
 const app = express();
