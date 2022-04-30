@@ -8,15 +8,6 @@ const saucesRoutes = require('./routes/sauce');
 const helmet = require('helmet');//protège les vulnérabilité d'en tête HTPP
 const mongoSanitize = require('express-mongo-sanitize'); //prévenir les injections
 
-//connexion à la bdd
-mongoose.connect('mongodb+srv://' + process.env.DB_LOGIN + ':' + process.env.DB_PASS + '@cluster0.76ulj.mongodb.net/' + process.env.DB_NAME + '?retryWrites=true&w=majority',
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
-    .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch(() => console.log('Connexion à MongoDB échouée !'));
-
 // Connexion a la database de mongoose
 mongoose.connect(`mongodb+srv://jeuxbib:jeuxbib@bibcluster.sv8fd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
