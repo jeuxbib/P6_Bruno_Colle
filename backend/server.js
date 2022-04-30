@@ -42,9 +42,4 @@ server.on('listening', () => {
     console.log('Listening on ' + bind);
 });
 
-<<<<<<< HEAD
 server.listen(port);
-=======
-server.listen(port);
-
->>>>>>> 74c627bee75864d75bf52f5b96a9e5f931ea5c1b
