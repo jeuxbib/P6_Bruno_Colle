@@ -4,44 +4,37 @@ const mongoose = require("mongoose");
 const helmet = require("helmet");
 
 
-const app = express();
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-app.use(express.urlencoded({extended:true}));
-app.use(helmet());
-// Removes the X-Powered-By header if it was set.
-app.disable('x-powered-by')
-app.use(helmet.hidePoweredBy()); 
-
-const path = require('path');
-
-
-// paths routes
-const saucesRoutes = require("./routes/sauces");
-const usersRoutes = require("./routes/users");
-
+// Connexion a la database de mongoose
 mongoose.connect(`mongodb+srv://jeuxbib:jeuxbib@bibcluster.sv8fd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
-   useUnifiedTopology: true })
+    useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
+const path = require('path');
+
+const authRoutes = require('./routes/auth');
+const saucesRoutes = require('./routes/sauces');
+const Sauce = require('./models/sauce')
+
+const app = express();
+
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  // Header for same source helmet images
-  res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
-  next();
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next();
 });
 
-// base route
-
-app.use("/api/sauces", saucesRoutes);
-app.use("/api/auth", usersRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use(express.static('images'));
 
-module.exports = app;
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use('/api/auth', authRoutes)
+app.use('/api/sauces', saucesRoutes)
+
+
+
+module.exports = app
