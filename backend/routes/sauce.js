@@ -16,7 +16,7 @@ router.delete('/:id', auth, stuffCtrl.deleteSauce);
 router.get('/:id', auth, stuffCtrl.getOneSauce)
 // route pour toutes les sauces
 router.get('/', auth, stuffCtrl.getAllSauce);
-//gesstion des likes
+//gestion des likes
 router.post('/:id/like', auth, stuffCtrl.likeSauce);
 
 module.exports = router;
