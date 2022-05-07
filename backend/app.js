@@ -1,12 +1,10 @@
 const express = require('express');
-//const dotenv = require('dotenv').config()
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path') //pour la gestion des fichiers envoyé par l'utilisateur
 const userRoutes = require('./routes/user');
 const saucesRoutes = require('./routes/sauce');
-//const helmet = require('helmet');//protège les vulnérabilité d'en tête HTPP
-//const mongoSanitize = require('express-mongo-sanitize'); //prévenir les injections
+
 
 // Connexion a la database de mongoose
 mongoose.connect(`mongodb+srv://jeuxbib:jeuxbib@bibcluster.sv8fd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
