@@ -4,7 +4,9 @@ const fs = require('fs'); //acces au fichier pour delete
 
 
 //ajout d'une sauce
+
 exports.createSauce =  (req, res, next) => {
+    console.log('Je suis dans CreateSauce');
     const sauceObject = JSON.parse(req.body.sauce)
     delete sauceObject._id; // l'id est fournis automatiquement du coup on ne récupère pas celui du front 
     const sauce = new Sauce({
@@ -27,8 +29,9 @@ exports.createSauce =  (req, res, next) => {
 };
 // modifier une sauce
 exports.modifySauce = (req, res, next) => {
+    console.log('Je suis dans modifySauce');
     const sauceObject = req.file ?
-        {
+        { 
             ...JSON.parse(req.body.sauce),
             imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
         } : { ...req.body };
@@ -39,6 +42,7 @@ exports.modifySauce = (req, res, next) => {
 
 //supprimer une sauce
 exports.deleteSauce = (req, res, next) => {
+    console.log('Je suis dans deleteSauce');
     //on va chercher l'url a supprimer
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
@@ -67,7 +71,7 @@ exports.getOneSauce = (req, res, next) => {
 }
 //toutes les sauces
 exports.getAllSauce = (req, res, next) => {
-
+    console.log('Je suis dans getAllsauce');
     Sauce.find().then(
         (Sauces) => res.status(200).json(Sauces)
     )
